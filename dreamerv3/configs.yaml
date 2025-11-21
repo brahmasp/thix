@@ -112,6 +112,7 @@ defaults:
   replay_length_eval: 0
   replay_context: 1
   agent: base # choices: random, base, thick, hierarchical
+  thick_dreamer: False
   loss_scales: {dec_cnn: 1.0, dec_mlp: 1.0, reward: 1.0, cont: 1.0, dyn: 1.0, rep: 0.1, actor: 1.0, critic: 1.0,
                 replay_critic: 0.3, coarse_dec_cnn: 0.0, coarse_dec_mlp: 0.0, coarse_reward: 0.0, coarse_cont: 0.0,
                 coarse_dyn: 0.0, coarse_rep: 0.0, sparse: 0.0, hlwm_action: 0.0, hlwm_reward: 0.0, hlwm_t_delta: 0.0,
@@ -182,20 +183,33 @@ defaults:
     replay_critic_grad: True
     replay_critic_bootstrap: imag
 
-  hl_ac:
-    actor: { layers: 3, units: 1024, act: silu, norm: rms, minstd: 0.1, maxstd: 1.0, outscale: 0.01, unimix: 0.01, inputs: [ context, stoch ], winit: normal, block_fans: False, block_norm: False }
-    critic: { layers: 3, units: 1024, act: silu, norm: rms, dist: symexp_twohot, outscale: 0.0, inputs: [ context, stoch ], winit: normal, bins: 255, block_fans: False, block_norm: False }
-    actor_dist_disc: onehot
-    actor_dist_cont: normal
-    horizon: 100
-    return_lambda: 0.95
-    return_lambda_replay: 0.95
+  # hl_ac:
+  #   actor: { layers: 3, units: 1024, act: silu, norm: rms, minstd: 0.1, maxstd: 1.0, outscale: 0.01, unimix: 0.01, inputs: [ context, stoch ], winit: normal, block_fans: False, block_norm: False }
+  #   critic: { layers: 3, units: 1024, act: silu, norm: rms, dist: symexp_twohot, outscale: 0.0, inputs: [ context, stoch ], winit: normal, bins: 255, block_fans: False, block_norm: False }
+  #   actor_dist_disc: onehot
+  #   actor_dist_cont: normal
+  #   horizon: 100
+  #   return_lambda: 0.95
+  #   return_lambda_replay: 0.95
+  #   slow_critic_update: 1
+  #   slow_critic_fraction: 0.02
+  #   retnorm: { impl: perc, rate: 0.01, limit: 1.0, perclo: 5.0, perchi: 95.0 }
+  #   valnorm: { impl: off, rate: 0.01, limit: 1e-8 }
+  #   advnorm: { impl: off, rate: 0.01, limit: 1e-8 }
+  #   actent: 3e-4
+  #   slowreg: 1.0
+  #   slowtar: False
+  #   grads: none
+  #   replay_critic_loss: False
+  #   replay_critic_grad: False
+
+  hl_critic:
+    critic: { layers: 3, units: 1024, act: silu, norm: rms, dist: symexp_twohot, outscale: 0.0, inputs: [context, stoch], winit: normal, bins: 255, block_fans: False, block_norm: False }
+    critic_psi: 0.9
+    horizon: 15
     slow_critic_update: 1
     slow_critic_fraction: 0.02
-    retnorm: { impl: perc, rate: 0.01, limit: 1.0, perclo: 5.0, perchi: 95.0 }
     valnorm: { impl: off, rate: 0.01, limit: 1e-8 }
-    advnorm: { impl: off, rate: 0.01, limit: 1e-8 }
-    actent: 3e-4
     slowreg: 1.0
     slowtar: False
     grads: none
@@ -218,6 +232,7 @@ defaults:
 
 thick:
   agent: thick
+  thick_dreamer: True
   wm.typ: thick
   dyn.typ: crssm
   dyn.crssm: {context: 8, context_integration: everywhere, context_gate_noise_scale: 0.1, coarse_layers: 1, sparse_free: 1.0, sparse_over_time_only: False} # TODO

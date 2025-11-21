@@ -36,7 +36,13 @@ class ActorCritic(nj.Module):
         self.critic = basenets.MLP((), name='critic', **self.ac_config.critic)
         self.slowcritic = basenets.MLP(
             (), name='slowcritic', **self.ac_config.critic, dtype='float32')
-
+        
+        if config.thick_dreamer:
+          # High level critic
+          self.hl_critic = basenets.MLP((), name='hl_critic', **self.config.hl_critic.critic)
+          self.hl_slowcritic = basenets.MLP(
+            (), name='hl_slowcritic', **self.config.hl_critic.critic, dtype='float32')
+        
     def policy(self, outs):
         return sample(self.actor(outs, bdims=1))
 

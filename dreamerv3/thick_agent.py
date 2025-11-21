@@ -44,6 +44,13 @@ class ThickAgent(nj.Module):
       self.config.ac.slow_critic_fraction,
       self.config.ac.slow_critic_update,
       name='ac_updater')
+  
+    if config.thick_dreamer:
+      self.hl_updater = jaxutils.SlowUpdater(
+        self.ac.hl_critic, self.ac.hl_slowcritic,
+        self.config.hl_critic.slow_critic_fraction,
+        self.config.hl_critic.slow_critic_update,
+        name='hl_critic_updater')
 
     # Optimizer
     kw = dict(config.opt)
@@ -135,6 +142,8 @@ class ThickAgent(nj.Module):
         self.modules, self.loss, data, carry, has_aux=True)
     metrics.update(mets)
     self.updater()
+    if self.config.thick_dreamer:
+      self.hl_updater()
     outs = {}
 
     if self.config.replay_context:
