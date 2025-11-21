@@ -100,6 +100,7 @@ defaults:
     run_name: yourrunname # seed number
     id: yourid
     mode: offline
+    group: algoname
 
   # Agent
   report: True
