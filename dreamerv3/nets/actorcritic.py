@@ -111,6 +111,7 @@ class ActorCritic(nj.Module):
                                                   self.config.hl_critic.slowreg * hl_critic.log_prob(sg(hl_slowcritic.mean())))[:, -1:]
         replay_ret = None
         if self.ac_config.replay_critic_loss:
+            assert False, "replay for thick dreamer not implemented"
             replay_critic = self.critic(replay_outs if self.ac_config.replay_critic_grad else sg(replay_outs))
             replay_slowcritic = self.slowcritic(replay_outs)
             boot = dict(

@@ -179,8 +179,8 @@ defaults:
     slowreg: 1.0
     slowtar: False
     grads: none
-    replay_critic_loss: True
-    replay_critic_grad: True
+    replay_critic_loss: False
+    replay_critic_grad: False
     replay_critic_bootstrap: imag
 
   # hl_ac:
