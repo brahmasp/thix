@@ -116,7 +116,7 @@ defaults:
   loss_scales: {dec_cnn: 1.0, dec_mlp: 1.0, reward: 1.0, cont: 1.0, dyn: 1.0, rep: 0.1, actor: 1.0, critic: 1.0,
                 replay_critic: 0.3, coarse_dec_cnn: 0.0, coarse_dec_mlp: 0.0, coarse_reward: 0.0, coarse_cont: 0.0,
                 coarse_dyn: 0.0, coarse_rep: 0.0, sparse: 0.0, hlwm_action: 0.0, hlwm_reward: 0.0, hlwm_t_delta: 0.0,
-                hlwm_stoch: 0.0, hlwm_action_prior_to_post: 0.0, hlac_actor: 0.0, hlac_critic: 0.0}
+                hlwm_stoch: 0.0, hlwm_action_prior_to_post: 0.0, hlac_actor: 0.0, hl_critic: 0.0}
   opt: {scaler: rms, lr: 4e-5, eps: 1e-20, momentum: True, wd: 0.0, warmup: 1000, globclip: 0.0, agc: 0.3, beta1: 0.9, beta2: 0.999, details: False, pmin: 1e-3, anneal: 0, schedule: constant}
   separate_lrs: False
   lrs: {dec: 1e-4, enc: 1e-4, dyn: 1e-4, rew: 1e-4, con: 1e-4, actor: 3e-5, critic: 3e-5}
@@ -209,7 +209,6 @@ defaults:
     horizon: 15
     slow_critic_update: 1
     slow_critic_fraction: 0.02
-    valnorm: { impl: off, rate: 0.01, limit: 1e-8 }
     slowreg: 1.0
     slowtar: False
     grads: none
@@ -239,7 +238,7 @@ thick:
   loss_scales: {dec_cnn: 1.0, dec_mlp: 1.0, reward: 1.0, cont: 1.0, dyn: 1.0, rep: 0.1, actor: 1.0, critic: 1.0,
                 replay_critic: 0.3, coarse_dec_cnn: 2.0, coarse_dec_mlp: 2.0, coarse_reward: 1.0, coarse_cont: 1.0,
                 coarse_dyn: 1.0, coarse_rep: 0.1, sparse: 1.0, hlwm_action: 1.0, hlwm_reward: 1.0, hlwm_t_delta: 1.0,
-                hlwm_stoch: 1.0, hlwm_action_prior_to_post: 1.0, hlac_actor: 0.0, hlac_critic: 0.0}
+                hlwm_stoch: 1.0, hlwm_action_prior_to_post: 1.0, hlac_actor: 0.0, hl_critic: 1.0}
   dec.simple.inputs: [deter, stoch, context]
   rewhead.inputs: [deter, stoch, context]
   conhead.inputs: [deter, stoch, context]

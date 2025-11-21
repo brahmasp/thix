@@ -59,6 +59,8 @@ class ThickAgent(nj.Module):
       lr = {f'agent/{k}': v for k, v in config.lrs.items()}
     self.opt = jaxutils.Optimizer(lr, **kw, name='opt')
     self.modules = [self.wm, self.ac.actor, self.ac.critic, self.hlwm]
+    if config.thick_dreamer:
+      self.modules.append(self.ac.hl_critic)
     self.scales = self.config.loss_scales.copy()
     self.wm.expand_scales(self.scales)
     self.hlwm.expand_scales(self.scales)
@@ -202,7 +204,21 @@ class ThickAgent(nj.Module):
 
     outs, acts, rew, con = self.wm.imagine(lambda out: cast(self.ac.policy(out)), data, replay_outs)
 
-    aclosses, mets = self.ac.loss(data, outs, acts, con, rew, replay_outs, update)
+    # applying stop gradient since we just want prediction
+    hl_out = {}
+    if self.config.thick_dreamer:
+      # computing high-level preds on imagined rollouts
+      # above we get context and latent state from each low-level state
+      # now we predict high-level actions and rewards / time deltas
+      hl_action_prior = self.hlwm.hl_action_prior(outs)
+      hl_act_out = {'hl_action': hl_action_prior.sample(seed=nj.seed()) if self.config.hl_wm.sample_actions else hl_action_prior.mode()}
+      hl_latent_input = {**outs, **hl_act_out}
+      hl_out = {
+        'reward': self.hlwm.heads['reward'](hl_latent_input).mode(),
+        't_delta': self.hlwm.heads['t_delta'](hl_latent_input).mode()
+      }
+      hl_out = sg(hl_out)
+    aclosses, mets = self.ac.loss(data, outs, acts, con, rew, replay_outs, update, hl_out)
     losses.update(aclosses)
     metrics.update(mets)
 

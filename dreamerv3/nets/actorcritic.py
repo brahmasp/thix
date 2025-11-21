@@ -46,7 +46,7 @@ class ActorCritic(nj.Module):
     def policy(self, outs):
         return sample(self.actor(outs, bdims=1))
 
-    def loss(self, data, outs, acts, con, rew, replay_outs, update):
+    def loss(self, data, outs, acts, con, rew, replay_outs, update, hl_out = {}):
         losses = {}
         acts = sg(acts)
         inp = treemap({
@@ -84,11 +84,31 @@ class ActorCritic(nj.Module):
         losses['actor'] = actor_loss
 
         # Critic
-        voffset, vscale = self.valnorm(ret, update)
-        ret_normed = (ret - voffset) / vscale
-        ret_padded = jnp.concatenate([ret_normed, 0 * ret_normed[:, -1:]], 1)
-        losses['critic'] = sg(weight)[:, :-1] * -(critic.log_prob(sg(ret_padded)) +
+        v_long = 0
+        if self.config.thick_dreamer:
+            # if thick_dreamer, then target (ret) needs to be modified
+            # to include high-level critic target
+            hl_critic = self.hl_critic(inp)
+            hl_slowcritic = self.hl_slowcritic(inp)
+            # one normalization for both critics since they regress to the same value
+            hl_voffset, hl_vscale = self.valnorm.stats()
+            hl_val = hl_critic.mean() * hl_vscale + hl_voffset
+            hl_slowval = hl_slowcritic.mean() * hl_vscale + hl_voffset
+            hl_tarval = hl_slowval if self.config.hl_critic.slowtar else hl_val
+            sub_v_long = rew + con * hl_tarval
+            v_long = hl_out['reward'] + (discount ** hl_out['t_delta']) * (sub_v_long)
+
+        ret_padded = jnp.concatenate([ret, 0 * ret[:, -1:]], 1)
+        final_target = self.config.hl_critic.critic_psi * ret_padded + (1 - self.config.hl_critic.critic_psi) * v_long
+
+        ftarget_offset, ftarget_scale = self.valnorm(final_target, update)
+        final_target_normed = (final_target - ftarget_offset) / ftarget_scale
+
+        losses['critic'] = sg(weight)[:, :-1] * -(critic.log_prob(sg(final_target_normed)) +
                                                   self.ac_config.slowreg * critic.log_prob(sg(slowcritic.mean())))[:, :-1]
+        if self.config.thick_dreamer:
+            losses['hl_critic'] = sg(weight)[:, -1:] * -(hl_critic.log_prob(sg(final_target_normed)) +
+                                                  self.config.hl_critic.slowreg * hl_critic.log_prob(sg(hl_slowcritic.mean())))[:, -1:]
         replay_ret = None
         if self.ac_config.replay_critic_loss:
             replay_critic = self.critic(replay_outs if self.ac_config.replay_critic_grad else sg(replay_outs))
