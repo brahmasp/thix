@@ -163,8 +163,10 @@ def make_logger(config):
       wandb_id = None
       if config.wandb.id:
           wandb_id = config.wandb.id
-      wandb.init(project=config.wandb.project, entity=config.wandb.entity, name=config.wandb.run_name, id=wandb_id,
-                 sync_tensorboard=True, dir=logdir, settings={"init_timeout": 180})
+      # wandb.init(project=config.wandb.project, entity=config.wandb.entity, name=config.wandb.run_name, id=wandb_id,
+      #            sync_tensorboard=True, dir=logdir, settings={"init_timeout": 180})
+      wandb.init(project=config.wandb.project, group=config.wandb.group, name=config.wandb.run_name, id=wandb_id,
+                 sync_tensorboard=True, mode=config.wandb.mode, dir=logdir, settings={"init_timeout": 180})
       wandb.config.update(config)
   return logger
 

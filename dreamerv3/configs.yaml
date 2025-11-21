@@ -95,10 +95,11 @@ defaults:
   wandb:
     use: False
     key: addyourkeyhere
-    project: yourproject
+    project: yourproject # HRL, main project name
     entity: yourentitiy
-    run_name: yourrunname
+    run_name: yourrunname # seed number
     id: yourid
+    mode: offline
 
   # Agent
   report: True
