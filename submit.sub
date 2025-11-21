@@ -1,0 +1,17 @@
+universe = container
+log = /dev/null
+output = /dev/null
+error = temp.err 
+should_transfer_files = YES
+when_to_transfer_output = ON_EXIT
+container_image = docker://brahmasp1/thix:v7
+transfer_input_files = embodied, dreamerv3, utils 
+requirements = (OpSysMajorVer > 7)
++WantGPULab = true
++GPUJobLength = "short"
+gpus_minimum_memory = 20000
+request_gpus = 1
+request_cpus = 1
+request_memory = 50GB
+request_disk = 50GB
+queue
