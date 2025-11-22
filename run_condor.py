@@ -28,7 +28,7 @@ parser.add_argument('--project_name', type = str, default = '')
 parser.add_argument('--config', type = str, required = True)
 parser.add_argument('--use_gpu', type = str2bool, default = False)
 parser.add_argument('--wandb_mode', type = str, default = 'offline')
-parser.add_argument('--logdir', type = str, default = '~/logdir/')
+parser.add_argument('--logdir', type = str, default = '~/logdir/{timestamp}/')
 
 # common setup
 parser.add_argument('--env_name', type = str, required = True)
