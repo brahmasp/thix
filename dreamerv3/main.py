@@ -30,6 +30,7 @@ def str2bool(v):
 parser = argparse.ArgumentParser()
 parser.add_argument('--seed', type = int)
 parser.add_argument('--wandb.key', type = str)
+parser.add_argument('--wandb.use', type = str2bool)
 parser.add_argument('--wandb.project', type = str)
 parser.add_argument('--wandb.group', type = str)
 parser.add_argument('--wandb.mode', type = str, default = 'offline')
