@@ -4,6 +4,7 @@ import pathlib
 import sys
 import warnings
 from functools import partial as bind
+import argparse
 
 directory = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(directory.parent))
@@ -18,6 +19,27 @@ warnings.filterwarnings('ignore', '.*truncated to dtype int32.*')
 import embodied
 from embodied import wrappers
 
+def str2bool(v):
+    if v.lower() in ('yes', 'true', 't', 'y', '1'):
+        return True
+    elif v.lower() in ('no', 'false', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
+
+parser = argparse.ArgumentParser()
+parser.add_argument('--seed', type = int)
+parser.add_argument('--wandb_project_name', default = 'HRL', type = str)
+parser.add_argument('--wandb_group_name', type = str)
+parser.add_argument('--wandb_mode', type = str, default = 'offline')
+parser.add_argument('--logdir', type = str)
+
+parser.add_argument('--env_name', type = str)
+
+parser.add_argument('--algo', type = str)
+
+parser.add_argument('--loss_scales.sparse', type = float)
+FLAGS = parser.parse_args()
 
 def main(argv=None):
 
