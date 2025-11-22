@@ -105,10 +105,9 @@ def get_cmd(var_cfg):
 
 def _launch_trial(seeds, exp_name, algo, variation_name, variation_cfg):
 
-    variation_cfg['wandb_project_name'] = exp_name + '-' + FLAGS.env_name
-    variation_cfg['wandb_mode'] = FLAGS.wandb_mode
-    variation_cfg['wandb_group_name'] = algo
-    variation_cfg['env_name'] = FLAGS.env_name
+    variation_cfg['wandb.project'] = exp_name + '-' + FLAGS.env_name
+    variation_cfg['wandb.mode'] = FLAGS.wandb_mode
+    variation_cfg['wandb.group'] = algo
 
     global ct
     for seed in seeds:
