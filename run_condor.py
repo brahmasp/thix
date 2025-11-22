@@ -119,6 +119,7 @@ def _launch_trial(seeds, exp_name, algo, variation_name, variation_cfg):
             continue
         variation_cfg['logdir'] = FLAGS.logdir + outfile
         variation_cfg['seed'] = seed
+        variation_cfg['wandb.run_name'] = 'seed_{}'.format(seed)
         cmd = get_cmd(variation_cfg)
         run_trial(outfile, cmd)
         ct += 1
