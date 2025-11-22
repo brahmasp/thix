@@ -1,5 +1,11 @@
 # THIX: THICK world models in JAX
 
+Condor command
+```
+python run_condor.py results --config condor_cfg.yaml --env_name crafter --condor --num_trials 5 --wandb_mode online --use_gpu true  --project_name hrl --wandb_use true
+```
+
+
 A reimplementation of [THICK][paper], our algorithm for learning hierarchical world models with adaptive temporal abstractions, in JAX based on [DreamerV3][dreamerv3].
 
 <p align="center">
