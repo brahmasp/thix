@@ -71,7 +71,7 @@ def run_trial(outfile, cmd):
             submitFile += '+WantGPULab = true\n'
             submitFile += '+GPUJobLength = "short"\n'
             submitFile += 'request_gpus = 1\n'
-            submitFile += 'require_gpus = (Capability >= 8.0)\n'
+            submitFile += 'require_gpus = (Capability >= 8.0 && Capability < 9.0)\n'
             submitFile += 'gpus_minimum_memory = 20000\n'
         submitFile += 'request_cpus = 1\n'
         submitFile += 'request_memory = 50GB\n'
