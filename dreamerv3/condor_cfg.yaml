@@ -1,0 +1,6 @@
+hrl:
+  common: {} # common setup to all algorithms
+  algorithms:
+    thick:
+      algo: thick
+      loss_scales.sparse: 1.0
