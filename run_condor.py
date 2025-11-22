@@ -94,10 +94,11 @@ def get_cmd(var_cfg):
 
     arguments = ''
     for key in var_cfg.keys():
-        arguments += '--{} {} '.format(key, var_cfg[key])
+        if key != 'algo' and key != 'env_name':
+            arguments += '--{} {} '.format(key, var_cfg[key])
  
+    arguments += '--configs {} {}'.format(FLAGS.env_name, var_cfg['algo'])
     print (arguments)
-    pdb.set_trace()
     if FLAGS.condor:
         cmd = '%s' % (arguments)
     return cmd

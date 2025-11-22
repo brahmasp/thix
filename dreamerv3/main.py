@@ -34,9 +34,7 @@ parser.add_argument('--wandb_group_name', type = str)
 parser.add_argument('--wandb_mode', type = str, default = 'offline')
 parser.add_argument('--logdir', type = str)
 
-parser.add_argument('--env_name', type = str)
-
-parser.add_argument('--algo', type = str)
+parser.add_argument('--configs', type = str, nargs = '+')
 
 parser.add_argument('--loss_scales.sparse', type = float)
 FLAGS = parser.parse_args()
