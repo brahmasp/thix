@@ -27,6 +27,7 @@ parser.add_argument('result_directory', default = None, help='Directory to write
 parser.add_argument('--project_name', type = str, default = '')
 parser.add_argument('--config', type = str, required = True)
 parser.add_argument('--use_gpu', type = str2bool, default = False)
+parser.add_argument('--wandb_use', type = str2bool, default = True)
 parser.add_argument('--wandb_mode', type = str, default = 'offline')
 parser.add_argument('--logdir', type = str, default = '~/logdir/{timestamp}/')
 
@@ -62,7 +63,7 @@ def run_trial(outfile, cmd):
         # squid
         setup_files = ''#'file:///staging/pavse/hrl_gpu.tar.gz'
         # staging
-        common_main_files = """embodied, dreamerv3, utils """
+        common_main_files = """exp.sh, embodied, dreamerv3, utils """
 
         submitFile += 'transfer_input_files = {}, {}\n'.format(setup_files, common_main_files)
         submitFile += 'requirements = (OpSysMajorVer > 7)\n' # needed for apptainer
@@ -105,6 +106,7 @@ def get_cmd(var_cfg):
 
 def _launch_trial(seeds, exp_name, algo, variation_name, variation_cfg):
 
+    variation_cfg['wandb.use'] = FLAGS.wandb_use
     variation_cfg['wandb.project'] = exp_name + '-' + FLAGS.env_name
     variation_cfg['wandb.mode'] = FLAGS.wandb_mode
     variation_cfg['wandb.group'] = algo
